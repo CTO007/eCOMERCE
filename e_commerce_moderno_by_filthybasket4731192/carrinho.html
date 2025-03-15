@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+
+        .cart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cart-item {
+            background-color: #fff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .cart-item .details {
+            flex-grow: 1;
+        }
+
+        .cart-item button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-item button:hover {
+            background-color: #c0392b;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .empty-cart {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            text-align: center;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 30px;
+        }
+
+        .checkout-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Carrinho de Compras</h1>
+    
+    <div class="cart-container" id="cart-container">
+        <!-- Itens do carrinho serão listados aqui -->
+    </div>
+<div class="grid">
+    <div class="total" id="total">
+        Total: R$ 0,00
+    </div>
+
+    <div class="empty-cart" id="empty-cart">
+        Carrinho vazio!
+    </div>
+
+    <a href="#" class="checkout-btn" id="checkout-btn" style="display: none;">Finalizar Compra</a>
+</div>
+    <script>
+        // Função para salvar o carrinho no localStorage
+        function saveCart(cartItems) {
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+        }
+
+        // Função para carregar os itens do carrinho do localStorage
+        function loadCart() {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            return cartItems;
+        }
+
+        // Função para renderizar os itens do carrinho
+        function renderCart() {
+            const cartItems = loadCart();
+            const cartContainer = document.getElementById('cart-container');
+            const totalElement = document.getElementById('total');
+            const emptyCartElement = document.getElementById('empty-cart');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            cartContainer.innerHTML = '';  // Limpa o conteúdo atual
+            let total = 0;
+
+            if (cartItems.length === 0) {
+                emptyCartElement.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            } else {
+                emptyCartElement.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            }
+
+            cartItems.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('cart-item');
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="details">
+                        <strong>${item.name}</strong><br>
+                        <span>R$ ${item.price}</span>
+                    </div>
+                    <button onclick="removeFromCart(${index})">Remover</button>
+                `;
+                cartContainer.appendChild(itemElement);
+
+                total += parseFloat(item.price.replace('R$', '').replace(',', '.'));
+            });
+
+            totalElement.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        // Função para remover um item do carrinho
+        function removeFromCart(index) {
+            const cartItems = loadCart();
+            cartItems.splice(index, 1);
+            saveCart(cartItems);
+            renderCart();
+        }
+
+        // Função para adicionar um produto ao carrinho
+        function addToCart(product) {
+            const cartItems = loadCart();
+            cartItems.push(product);
+            saveCart(cartItems);
+            renderCart();
+        }
+
+        // Inicializando a página do carrinho
+        window.onload = function() {
+            renderCart();
+        };
+
+        // Simulação de adicionar produtos ao carrinho
+        // Exemplo de como adicionar um produto (poderia ser feito ao clicar no botão "Adicionar ao Carrinho")
+   
+
+    </script>
+
+</body>
+</html>
